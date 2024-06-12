@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+   	<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" rel="stylesheet">
+   	
+   	 <link rel="stylesheet" href="/private/css/settings.css" />
+	<script src="public/jquery/jquery-3.1.1.js"></script>
+	<script src="public/jquery/jquery.validate.min.js"></script>
+	<script src="/private/js/user.js"></script>
+	<link rel="stylesheet" href="/public/css/custom.css" />	
+    <title>Settings | DigitalDrop</title>
+</head>
+
+<body>
+<div class="row">
+ <!-- Sidebar Section -->
+ <div th:insert="fragments/sidebar :: sidebar" class="col-2"></div>
+ <!-- End of Sidebar Section -->
+
+ <!-- Main Content -->
+ <main class="col-10 pt-3 ">
+    <h1>Settings</h1>
+    <section class="settings-section">
+        <h2>Connect your Store</h2>
+        <form  th:action="@{/saveSettings}" class="row w-100" method="post">
+        <input type="hidden" name="id" id="id" th:value="${store != null ? store.id : null}">
+        <div class=" col-6 pt-3">
+            <label for="platform">Platform:</label><br>
+            <select required  class="w-100" name="storeType.id">
+			    <option th:each="entry : ${storeTypes}"
+			            th:value="${entry.id}"
+			            th:text="${entry.name}"			            
+			            th:selected="${entry.id == (store != null ? store.storeType.id: 0)}">
+			    </option>
+			</select>
+		</div>
+		<div class=" col-6 pt-3">
+            <label for="storeName" >Store Link:</label><br>
+            <input  required  class="w-100"type="text"  id="link" name="link" th:value="${store != null ?store.link : ''}">
+             </div><div class=" col-6 pt-3">
+            <label for="storeURL"  >Store Key:</label><br>
+            <input  required  class="w-100"type="text"  id="field1" name="field1" th:value="${store != null ?store.field1 : ''}">
+             </div><div class=" col-6 pt-3">
+            <label for="storeURL" >Store Secret:</label><br>
+            <input  required  class="w-100"type="text"  id="field2" name="field2" th:value="${store != null ?store.field2 : ''}">
+            
+             </div>
+           <h2 class="pt-3" >Connect your Courier</h2><br><br>
+                           
+             <div class=" col-6 pt-3">
+             
+         <label for="courierName">Courier Name:</label><br>
+          <select required  class="w-100" name="courierType.id">
+		    <option th:each="entry : ${courierTypes}"
+		            th:value="${entry.id}"
+		            th:text="${entry.name}"			            
+		            th:selected="${entry.id == (store != null ? store.courierType.id: 0)}">
+		    </option>
+		 </select>
+		 </div>
+         <div class=" col-6 pt-3">
+         <label for="courierAccountID">Courier Account Token:</label><br>
+         <input required  class="w-100"type="text" id="field3" name="field3" th:value="${store != null ? store.field3 : ''}">
+          </div>
+         
+         <div class ="col-6 pt-4" ><button class="pt-3">Save Store</button></div>
+        
+        </form>
+    </section>
+    <section class="settings-section">
+         <form  th:action="@{/saveJazzSettings}" class="row w-100" method="post">
+             <input type="hidden" name="id" id="id" th:value="${jazzAcc!= null ? jazzAcc.id : null}">
+        
+         	<h2>Connect your Jazzcash Account</h2>
+            <label for="jazzcashAccountName">Jazzcash Account Name:</label>
+            <input  class="w-100"type="text" id="jazzId" th:value="${jazzAcc!= null ?jazzAcc.jazzId : ''}" 
+            name="jazzId">
+            <label for="jazzcashAccountPassword">Jazzcash Account Password:</label>
+            <input  class="w-100"type="password" th:value="${jazzAcc != null ?jazzAcc.jazzPassword : ''}" 
+             id="jazzPassword" name="jazzPassword">
+             
+            <div class ="col-6 pt-4" ><button class="pt-3">Save Jazz Account</button></div>
+             
+        </form>
+    </section>
+</main>
+<!-- End of Main Content -->
+</div>
+</body>
+
+</html>

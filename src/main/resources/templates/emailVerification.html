@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script
+            src="https://kit.fontawesome.com/64d58efce2.js"
+            crossorigin="anonymous"
+        ></script>
+		<link rel="stylesheet" href="/public/bootstrap/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/public/css/emailverify.css" />
+		<link rel="stylesheet" href="/public/css/custom.css" />
+        <title>Digital Drop - Email Verification</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="form">
+                <h2 class="title">Email Verification</h2>
+                <p class="text">Enter the 6-digit code sent to your email address</p><br>
+				<form method="post" class="w-100 text-center" name="emailVerification" action="/user/verifyCode">
+	                <div class="input-contianer">
+						<input name="userEmail" th:value="${user != null ? user.email : ''}" type="hidden">
+	                    <input name="otp" type="text"class="text" maxlength="6"required autofocus >					
+	                </div><br><br>
+					<div class="error-container regError" th:text="${error_msg}">
+						
+					</div> 
+	                <button class="verify-btn" type="submit">Verify</button>
+				</form>
+				<br>
+				<form method="post" action="/user/resendCode" class="w-100 text-center" >
+					<input name="userEmail" th:value="${user != null ? user.email : ''}" type="hidden">
+					<button class="verify-btn" type="submit">Resend Code</button>
+				</form>
+            </div>
+        </div>
+		<script src="/public/jquery/jquery-3.1.1.js"></script>
+		<script src="/public/jquery/jquery.validate.min.js"></script>
+	    <script src="/public/js/home.js"></script>
+    </body>
+</html>

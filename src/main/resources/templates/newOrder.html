@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+   	<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" rel="stylesheet">
+   	
+   	 <link rel="stylesheet" href="/private/css/settings.css" />
+	<script src="public/jquery/jquery-3.1.1.js"></script>
+	<script src="public/jquery/jquery.validate.min.js"></script>
+	<script src="/private/js/user.js"></script>
+	<link rel="stylesheet" href="/public/css/custom.css" />	
+    <title>New Order | DigitalDrop</title>
+</head>
+
+<body>
+<div class="row">
+ <!-- Sidebar Section -->
+ <div th:insert="fragments/sidebar :: sidebar" class="col-2"></div>
+ <!-- End of Sidebar Section -->
+
+ <!-- Main Content -->
+ <main class="col-10 pt-3 ">
+    <h1>New Order</h1>
+    <section class="settings-section">
+        <h2>Add/Edit Your  Order</h2>
+        <form  th:action="@{/saveOrders}+'?isEdit='+${isEdit}" class="row w-100" method="post">    
+        	<div class="col-12 text-center">
+        		<h3 th:text="${error_msg}" style="color:red"></h3>       
+        		 <h3 th:text="${success_msg}" style="color:green"></h3>        
+        		 
+        	</div>    
+			<div class=" col-6 pt-3">
+            	<label for="storeName" >Order NO:</label><br>
+            	<input required class="w-100"type="text"  id="id.orderNo" name="id.orderNo" th:value="${order != null ?order.id.orderNo : ''}">
+            </div>      
+           	<div class=" col-6 pt-3">
+            	<label for="storeName" >Order Status:</label><br>
+            	<input required  class="w-100"type="text"  id="externalStatus" name="externalStatus" th:value="${order != null ?order.externalStatus : ''}">
+            </div>
+            <div class=" col-6 pt-3">
+	            <label for="platform">Paid Status:</label><br>
+	            <select required  class="w-100" name="status" id="status">
+				    <option th:selected="${(order != null && order.status == 'Unpaid') || (order == null || order.status == null)}" value="Unpaid">Unpaid
+				    </option>
+				    <option th:selected="${(order != null && order.status == 'Settled')}" value="Settled">Settled
+				    </option>
+				</select>
+			</div>
+           	<div class=" col-6 pt-3">
+            	<label for="storeName" >Order Amount:</label><br>
+            	<input required  class="w-100"type="number"  id="total" name="total" th:value="${order != null ?order.total : 0}">
+            </div>
+            
+            <div class=" col-6 pt-3">      
+                <label for="storeName" >Order Date:</label><br>
+                  
+		        <input required type="date" class="form-control" id="dateCreated" name="dateCreated" th:value="${order != null ? #dates.format(order.dateCreated, 'yyyy-MM-dd') : ''}"/>
+		        
+        	</div>
+        	<div class=" col-6 pt-3">      
+                <label for="storeName" >Settlement Date:</label><br>
+                  
+		        <input  type="date" class="form-control" id="settledDate" name="settledDate" th:value="${order != null ? #dates.format(order.settledDate, 'yyyy-MM-dd') : ''}"/>
+		        
+        	</div>
+        	<div class=" col-6 pt-3">
+            	<label for="storeName" >Transaction ID</label><br>
+            	<input  class="w-100"type="text"  id="transactionId" name="transactionId" th:value="${order != null ?order.transactionId: ''}">
+            </div>
+            <div class=" col-12 pt-3">
+            	<label for="storeName" >Address 1:</label><br>
+            	<input required  class="w-100"type="text"  id="address1" name="address1" th:value="${order != null ?order.address1: ''}">
+            </div>
+            <div class=" col-12 pt-3">
+            	<label for="storeName" >Address 2:</label><br>
+            	<input required  class="w-100"type="text"  id="address2" name="address2" th:value="${order != null ?order.address2 : ''}">
+            </div> 
+           	<div class=" col-6 pt-3">
+            	<label for="storeName" >First Name:</label><br>
+            	<input  required  class="w-100"type="text"  id="firstName" name="firstName" th:value="${order != null ?order.firstName : ''}">
+            </div> 
+            <div class=" col-6 pt-3">
+            	<label for="storeName" >Last Name:</label><br>
+            	<input  required  class="w-100"type="text"  id="lastName" name="lastName" th:value="${order != null ?order.lastName : ''}">
+            </div>
+            <div class=" col-6 pt-3">
+            	<label for="storeName" >Phone:</label><br>
+            	<input required   class="w-100"type="text"  id="phone" name="phone" th:value="${order != null ?order.phone: ''}">
+            </div>
+            <div class=" col-6 pt-3">
+            	<label for="storeName" >Email:</label><br>
+            	<input  required  class="w-100"type="email"  id="billEmail" name="billEmail" th:value="${order != null ?order.billEmail : ''}">
+            </div>
+            <div class=" col-6 pt-3">
+            	<label for="storeName" >Country:</label><br>
+            	<input required  class="w-100"type="text"  id="country" name="country" th:value="${order != null ?order.country : ''}">
+            </div>
+            <div class=" col-6 pt-3">
+            	<label for="storeName" >City:</label><br>
+            	<input required  class="w-100"type="text"  id="city" name="city" th:value="${order != null ?order.city : ''}">
+            </div>
+            <div class=" col-6 pt-3">
+            	<label for="storeName" >State:</label><br>
+            	<input required  class="w-100"type="text"  id="state" name="state" th:value="${order != null ?order.state : ''}">
+            </div>
+            <div class=" col-6 pt-3">
+            	<label for="storeName" >Postcode:</label><br>
+            	<input required  class="w-100"type="text"  id="postcode" name="postcode" th:value="${order != null ?order.postcode : ''}">
+            </div>
+          <div class ="col-12 pt-4" ><button class="pt-3">Save Order</button></div>
+        
+        </form>
+    </section>
+</main>
+<!-- End of Main Content -->
+</div>
+</body>
+
+</html>

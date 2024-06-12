@@ -1,0 +1,29 @@
+.regError{
+	color: red  !important;
+	width: 100% !important;
+}
+.bgDashboard{
+	background-color: var(--color-white);
+    padding: var(--card-padding);
+    border-radius: var(--card-border-radius);
+    margin-top: 1rem;
+    box-shadow: var(--box-shadow);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.w-10{
+	width:10% !important;
+}
+.w-20{
+	width:20% !important;
+}
+.w-15{
+	width:15% !important;
+}
+.action button{
+	
+padding: 3px !important;
+}
+.shipTable tr td{
+	border-width: 1px;
+}

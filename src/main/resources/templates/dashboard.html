@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/public/css/dashboard.css" />
+	<script src="public/jquery/jquery-3.1.1.js"></script>
+	<script src="public/jquery/jquery.validate.min.js"></script>
+	<script src="/public/js/dashboard.js"></script>
+	<link rel="stylesheet" href="/public/css/custom.css" />	
+    <title>Dashboard | DigitalDrop</title>
+</head>
+
+<body>
+
+    <div class="row">
+        <!-- Sidebar Section -->
+        <div th:insert="fragments/sidebar :: sidebar" class="col-2"></div>
+        <!-- End of Sidebar Section -->
+
+        <!-- Main Content -->
+        <main class="col-10 pt-1">
+            <h1>Dashboard</h1>
+            <!-- Analyses -->
+            <div class="analyse  row">
+                <div class="sales col-3">
+                    <div class="status bgDashboard">
+                        <div class="info">
+                            <h3>Total Orders</h3>
+                            <h1 th:text="${totalOrders}"></h1>
+                        </div>
+                        <div class="progresss">
+                            <svg>
+                                <circle cx="38" cy="38" r="36"></circle>
+                            </svg>
+                            <div class="percentage">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="visits col-3">
+                    <div class="status bgDashboard">
+                        <div class="info">
+                            <h3>Tracked Orders</h3>
+                            <h1 th:text="${trackedOrders}"></h1>
+                        </div>
+                        <div class="progresss">
+                            <svg>
+                                <circle cx="38" cy="38" r="36"></circle>
+                            </svg>
+                            <div class="percentage">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="searches col-3">
+                    <div class="status bgDashboard">
+                        <div class="info">
+                            <h3>Paid Orders</h3>
+                            <h1 th:text="${paidOrders}"></h1>
+                        </div>
+                        <div class="progresss">
+                            <svg>
+                                <circle cx="38" cy="38" r="36"></circle>
+                            </svg>
+                            <div class="percentage">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            <div class="user-profile col-3">
+                <div class="profile bgDashboard pt-0 pb-0">
+                            <div  th:if="${imageData != null}"><img th:src="@{'data:image/jpeg;base64,' + ${imageData}}" alt="Image"></div>
+              <div th:if="${imageData == null}"> <img src="/private/img/person-icon.png" class="w-80">  </div> 
+                    <h2 th:text="${user.fullName}"></h2>
+                </div>
+            </div>
+            </div>
+            <!-- End of Analyses -->
+            <div class="mt-0">
+                <h2>Recent Orders</h2> 
+ 		<table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th class="w-10">ORDER NO</th>
+                <th class="w-15">ORDER AMOUNT</th>
+                <th class="w-10">ORDER DATE</th>
+                <th class="w-15">USER NAME</th>
+                <th class="w-15">STATUS</th>
+                <th class="w-15">TRACKING #</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="order: ${orders.content}">
+                <td th:text="${order.id.orderNo}"></td>
+                <td th:text="${order.total}"></td>
+                <td th:text="${#dates.format(order.dateCreated, 'yyyy-MM-dd')}"></td>
+                <td th:text="${order.firstName + ' ' + order.lastName}"></td>
+                <td th:text="${order.externalStatus}"></td>       
+                 <td th:text="${order.trackingNo}"></td>  
+            </tr>
+        </tbody>
+    </table>
+     <div class ="col-6 p-2" ><a href="/orders"><button class="pt-3 btn btn-primary">View More</button></a></div>
+    
+    </div>
+        </main>
+
+    </div>
+</body>
+
+</html>

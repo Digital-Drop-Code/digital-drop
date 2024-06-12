@@ -1,0 +1,69 @@
+<div  th:fragment="sidebar">
+
+<!-- Sidebar Section -->
+<aside>
+    <div class="toggle">
+        <div class="logo">
+            <img src="/public/img/logo.PNG">
+            <h2>Digital<span class="theme">Drop</span></h2>
+        </div>
+        <div class="close" id="close-btn">
+            <span class="material-icons-sharp">
+                close
+            </span>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <a href="/userAccount"  th:class="${section == 'user'} ? 'active' : ''">
+            <span class="material-icons-sharp">
+                person_outline
+            </span>
+            <h3>User</h3>
+        </a>
+        <a href="/dashboard"  th:class="${section == 'dashboard'} ? 'active' : ''">
+            <span class="material-icons-sharp">
+                dashboard
+            </span>
+            <h3>Dashboard</h3>
+        </a>
+        <a href="/orders">
+            <span class="material-icons-sharp">
+                receipt_long
+            </span>
+            <h3>Orders</h3>
+        </a>
+        <!-- <a href="#">
+            <span class="material-icons-sharp">
+                insights
+            </span>
+            <h3>Analytics</h3>
+        </a> -->
+        <a href="/newOrder">
+            <span class="material-icons-sharp">
+                inventory
+            </span>
+            <h3>New Order</h3>
+        </a>
+        <a href="/order/showReport">
+            <span class="material-icons-sharp">
+                report_gmailerrorred
+            </span>
+            <h3>Reports</h3>
+        </a>
+        <a href="/settings">
+            <span class="material-icons-sharp">
+                settings
+            </span>
+            <h3>Settings</h3>
+        </a>
+        <a href="/logout">
+            <span class="material-icons-sharp">
+                logout
+            </span>
+            <h3>Logout</h3>
+        </a>
+    </div>
+</aside>
+<!-- End of Sidebar Section -->
+</div>

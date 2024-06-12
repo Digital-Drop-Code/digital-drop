@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+   	<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" rel="stylesheet">
+   	
+   	 <link rel="stylesheet" href="/private/css/settings.css" />
+	<script src="/public/jquery/jquery-3.1.1.js"></script>
+	<script src="/public/jquery/jquery.validate.min.js"></script>
+	<script src="/private/js/user.js"></script>
+	<script src="/private/js/jsPDF/dist/jspdf.umd.js"></script>
+	<script src="/public/js/html2canvas.min.js"></script>
+	
+	<link rel="stylesheet" href="/public/css/custom.css" />	
+    <title>Shipping Label | DigitalDrop</title>
+</head>
+<script>
+window.jsPDF = window.jspdf.jsPDF;
+
+//Convert HTML content to PDF
+function Convert_HTML_To_PDF() {
+ var doc = new jsPDF();
+	
+ // Source HTMLElement or a string containing HTML.
+ var elementHTML = document.querySelector("#orderData");
+
+ doc.html(elementHTML, {
+     callback :function(doc) {
+         // Save the PDF
+            //doc.setFillColor(204, 204,204,0);
+         doc.save('document-html.pdf');
+     },
+     margin: [10, 10, 10, 10],
+     autoPaging: 'text',
+     x: 0,
+     y: 0,
+     width: 190, //target width in the PDF document
+     windowWidth: 675 //window width in CSS pixels
+ });
+}
+</script>
+<body>
+<div class="row">
+ <!-- Sidebar Section -->
+ <div th:insert="fragments/sidebar :: sidebar" class="col-2"></div>
+ <!-- End of Sidebar Section -->
+
+ <!-- Main Content -->
+ <main class="col-10 pt-3 ">
+    <section class="settings-section row">
+        <h2>Shipping Label</h2>
+        <div class="col-4">
+        	<button onclick="Convert_HTML_To_PDF();">Print Shipping Label</button>
+        </div>
+         <div class="col-3"></div>
+        <div class="col-10" style="background: white" id="orderData">
+        <br>
+        	<table class="table shipTable" style="background: white">
+        		<tr style="background: white">
+        			<td style="background: white">Ship From : </td>
+        			<td  style="background: white"colspan="3"><span th:text="${user.businessName}"></span></td>
+        		</tr>
+        		<tr style="background: white">
+        			<td style="background: white" colspan="4">Ship To : </td>
+        		</tr>
+        		<tr style="background: white">
+        			<td style="background: white">Customer </td>
+        			<td style="background: white"><span th:text="${order.firstName+' '+order.lastName}"></span></td>
+        			<td style="background: white">Tracking#</td>
+        			<td style="background: white"><span th:text="${order.trackingNo}"></span></td>
+        		</tr>
+        		<tr style="background: white">
+        			<td style="background: white">Order #</td>
+        			<td style="background: white"><span th:text="${order.id.orderNo}"></span></td>
+        			<td style="background: white">Amount</td>
+        			<td style="background: white"><span th:text="${order.total}"></span></td>
+        		</tr>
+        		<tr style="background: white">
+        			<td style="background: white">State</td>
+        			<td  style="background: white"><span th:text="${order.state}"></span></td>
+        		
+        			<td style="background: white">City</td>
+        			<td  style="background: white"><span th:text="${order.city}"></span></td>
+        		</tr>
+        		
+        		<tr style="background: white">
+        			<td style="background: white">Address</td>
+        			<td  style="background: white"colspan="3"><span th:text="${order.address1}"></span></td>
+        		</tr>
+        	</table>
+        
+        </div>
+    </section>
+</main>
+<!-- End of Main Content -->
+</div>
+</body>
+
+</html>
