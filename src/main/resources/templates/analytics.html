@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/public/css/dashboard.css" />
+	<script src="public/jquery/jquery-3.1.1.js"></script>
+	<script src="public/jquery/jquery.validate.min.js"></script>
+	<script src="/public/js/chart-utils.js"></script>
+	<script src="/public/js/chart.js"></script>	
+	<link rel="stylesheet" href="/public/css/custom.css" />	
+    <title>Analytics | DigitalDrop</title>
+</head>
+
+<body>
+
+<div class="row">
+    <!-- Sidebar Section -->
+    <div th:insert="fragments/sidebar :: sidebar" class="col-2"></div>
+    <!-- End of Sidebar Section -->
+
+    <!-- Main Content -->
+    <main class="col-10 pt-1 row">
+        <div class="col-12 m-0 p-0"><h4 class="col-12 m-0 p-0">Analytics</h4>
+        <div class="analyse  row">
+        
+        <div class="col-5">
+	             <!-- Charts Area
+	       ============================================= -->
+		<div class="bottommargin mx-auto " id="graph-container-5a">
+	        <canvas id="chart-digAmount-2"></canvas>
+	     </div>
+	          <h5 class="mt-5 text-center">Total Orders</h5>
+	     </div>
+	         
+         <div class="col-5">
+         <br>
+		         <!-- Charts Area
+			============================================= -->
+			<div class="bottommargin mx-auto " id="graph-container-5">
+				<canvas id="chart-digAmount-1"></canvas>
+			</div>
+			<h5 class="mt-5 text-center">Orders By Month</h5>
+			
+		<!-- Charts Area End -->
+         </div>
+          
+	     <div class="col-5">
+         <br>
+		         <!-- Charts Area
+			============================================= -->
+			<div class="bottommargin mx-auto " id="graph-container-5c">
+				<canvas id="chart-digAmount-4"></canvas>
+			</div>
+			<h5 class="mt-5 text-center">Amount By Month</h5>
+			
+		<!-- Charts Area End -->
+         </div>
+         
+        <div class="col-5">
+	             <!-- Charts Area
+	       ============================================= -->
+		<div class="bottommargin mx-auto " id="graph-container-5b">
+	        <canvas id="chart-digAmount-3"></canvas>
+	     </div>
+	          <h5 class="mt-5 text-center">Orders By City</h5>
+	     </div>
+         </div></div>
+        
+    </main>
+
+</div>
+<script type="text/javascript" th:inline="javascript">
+var tOrder = [[${trackedOrders}]];
+var pOrder = [[${paidOrders}]];
+var uOrder = [[${(totalOrders-paidOrders) < 0 ? 0 : (totalOrders-paidOrders)}]];
+var monthName = [];
+
+/*[# th:each="n : ${monthGraph.keys}"]*/
+
+monthName.push("[(${n+''})]");
+
+/*[/]*/
+var monthOrders = [[${monthGraph.count}]];
+
+var config = {
+        type: 'line',
+        data: {
+            labels: monthName,
+            datasets: [{
+                label: "Orders",
+                backgroundColor: window.chartColors.blue,
+                borderColor: window.chartColors.blue,
+                data: monthOrders,
+                fill: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+            	y: {
+                    min: 10,
+                    max: 50,
+                  },
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Month'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Value'
+                    },
+                    min:-1,
+                    ticks: {
+                        // forces step size to be 50 units
+                        stepSize: 1
+                      }
+                }]
+            }
+        }
+    };
+    $('#chart-digAmount-1').remove(); // this is my <canvas> element
+    $('#graph-container-5').append('<canvas id="chart-digAmount-1"><canvas>');
+    var ctx = document.getElementById("chart-digAmount-1").getContext("2d");
+    window.myLine = new Chart(ctx, config);
+    
+var config2 = {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [uOrder,pOrder,tOrder],
+                backgroundColor: [
+                    window.chartColors.red,
+                    window.chartColors.purple,
+                    window.chartColors.yellow,
+
+                ],
+                label: 'Order Count Chart'
+            }],
+            labels: [
+
+                "Unpaid",
+
+                "Paid",
+
+                "Tracked",
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        }
+    };
+
+    $('#chart-digAmount-2').remove(); // this is my <canvas> element
+    $('#graph-container-5a').append('<canvas id="chart-digAmount-2"><canvas>');
+    var ctx = document.getElementById("chart-digAmount-2").getContext("2d");
+    window.myLine = new Chart(ctx, config2);
+    var cityNames  = [];
+
+    /*[# th:each="n : ${cityGraph.keys}"]*/
+
+    cityNames.push("[(${n+''})]");
+
+    /*[/]*/
+    var cityOrders = [[${cityGraph.count}]];
+    var config3 = {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: cityOrders,
+                    backgroundColor: [
+                        window.chartColors.green,
+                        window.chartColors.blue,
+                        window.chartColors.yellow,
+
+                    ],
+                    label: ''
+                }],
+                labels: cityNames
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            }
+        };
+
+        $('#chart-digAmount-3').remove(); // this is my <canvas> element
+        $('#graph-container-5b').append('<canvas id="chart-digAmount-3"><canvas>');
+        var ctx = document.getElementById("chart-digAmount-3").getContext("2d");
+        window.myLine = new Chart(ctx, config3)
+        
+
+        var monthName1 = [];
+
+        /*[# th:each="n : ${amountGraph.keys}"]*/
+
+        monthName1.push("[(${n+''})]");
+
+        /*[/]*/
+        var monthOrders1 = [[${amountGraph.values}]];
+
+        var config4 = {
+                type: 'line',
+                data: {
+                    labels: monthName1,
+                    datasets: [{
+                        label: "Orders",
+                        backgroundColor: window.chartColors.red,
+                        borderColor: window.chartColors.red,
+                        data: monthOrders1,
+                        fill: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: true
+                    },
+                    scales: {
+                    	y: {
+                            min: 10,
+                            max: 50,
+                          },
+                        xAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Month'
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Value'
+                            },
+                            min:-1,
+                            ticks: {
+                                // forces step size to be 50 units
+                                stepSize: 500
+                              }
+                        }]
+                    }
+                }
+            };
+            $('#chart-digAmount-4').remove(); // this is my <canvas> element
+            $('#graph-container-5c').append('<canvas id="chart-digAmount-4"><canvas>');
+            var ctx = document.getElementById("chart-digAmount-4").getContext("2d");
+            window.myLine = new Chart(ctx, config4);
+            
+</script>
+</body>
+
+</html>
