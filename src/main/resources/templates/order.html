@@ -23,7 +23,7 @@
 
  <!-- Main Content -->
  <main class="col-10 pt-3 ">
-    <h1>Orders</h1>
+    <h4>Orders</h4>
     <div class="row">
     <div class="col-12">
   	    <section class="settings-section">
@@ -48,7 +48,7 @@
                 <th class="w-10"><a th:href="@{/orders(sortBy=id.orderNo, sortDir= ${reverseSortDir})}">ORDER NO</a></th>
                 <th class="w-15"><a th:href="@{/orders(sortBy=total, sortDir= ${reverseSortDir})}">ORDER AMOUNT</a></th>
                 <th class="w-10"><a th:href="@{/orders(sortBy=dateCreated, sortDir= ${reverseSortDir})}">ORDER DATE</a></th>
-                <th class="w-15"><a th:href="@{/orders(sortBy=firstName, sortDir= ${reverseSortDir})}">USER NAME</a></th>
+                <th class="w-15"><a th:href="@{/orders(sortBy=firstName, sortDir= ${reverseSortDir})}">CUSTOMER NAME</a></th>
                 <th class="w-15"><a th:href="@{/orders(sortBy=externalStatus, sortDir= ${reverseSortDir})}">STATUS</a></th>
                 <th class="w-15"><a th:href="@{/orders(sortBy=trackingNo, sortDir= ${reverseSortDir})}">TRACKING #</a></th>
                 

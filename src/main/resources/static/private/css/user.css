@@ -303,8 +303,7 @@ main .form-group .input-field input, textarea{
     outline: none;
     border: none;
     line-height: 1.5;
-    font-weight: 600;
-    font-size: 1.5rem;
+    font-size: 14px;
     border-radius: 0.5rem;
     color: #8c52ff;
     width: 100%;

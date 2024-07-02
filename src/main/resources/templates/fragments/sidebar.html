@@ -27,6 +27,7 @@
             </span>
             <h3>Dashboard</h3>
         </a>
+        
         <a href="/orders">
             <span class="material-icons-sharp">
                 receipt_long
@@ -44,6 +45,12 @@
                 inventory
             </span>
             <h3>New Order</h3>
+        </a>
+        <a href="/analytics"  th:class="${section == 'analytics'} ? 'active' : ''">
+            <span class="material-icons-sharp">
+                analytics
+            </span>
+            <h3>Analytics</h3>
         </a>
         <a href="/order/showReport">
             <span class="material-icons-sharp">

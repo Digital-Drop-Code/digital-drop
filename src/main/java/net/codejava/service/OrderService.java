@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +33,8 @@ import net.codejava.entity.Order;
 import net.codejava.entity.OrderKey;
 import net.codejava.entity.StoreInfo;
 import net.codejava.entity.User;
+import net.codejava.model.GraphData;
+import net.codejava.model.GraphRow;
 import net.codejava.model.OrderModel;
 import net.codejava.repo.OrderRepository;
 import net.codejava.utility.Constant;
@@ -119,6 +123,27 @@ public class OrderService {
 		}
 	}
 
+	public GraphData totalOrdersByMonth(User user) {
+		List<GraphRow> rows = orderRepository.countByUserAndMonth(user);
+		return new GraphData(
+				rows.stream().flatMap(p -> Stream.of(p.getKey())).collect(Collectors.toList())
+				,rows.stream().flatMap(p -> Stream.of(Long.valueOf(p.getCount()))).collect(Collectors.toList()));
+	}
+	
+	public GraphData amountOrdersByMonth(User user) {
+		List<GraphRow> rows = orderRepository.amountByUserAndMonth(user);
+		return new GraphData(
+				rows.stream().flatMap(p -> Stream.of(p.getKey())).collect(Collectors.toList())
+				,rows.stream().flatMap(p -> Stream.of(p.getValue())).collect(Collectors.toList()), null);
+	}
+	
+	public GraphData totalOrdersByCity(User user) {
+		List<GraphRow> rows = orderRepository.countByUserAndCity(user);
+		return new GraphData(
+				rows.stream().flatMap(p -> Stream.of(p.getKey())).collect(Collectors.toList())
+				,rows.stream().flatMap(p -> Stream.of(Long.valueOf(p.getCount()))).collect(Collectors.toList()));
+	}
+	
 	public Long totalOrders(User user) {
 		return orderRepository.countByUser(user);
 	}
@@ -135,15 +160,15 @@ public class OrderService {
 	}
 
 	public void generateReport(User user,HttpServletResponse response) throws IOException {
-		   response.setContentType("application/octet-stream");
-	        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-	        String currentDateTime = dateFormatter.format(new Date());
-	         
-	        String headerKey = "Content-Disposition";
-	        String headerValue = "attachment; filename=orders" + currentDateTime + ".xlsx";
-	        response.setHeader(headerKey, headerValue);
-	         
-	        export(response, user);
+	   response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+         
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=orders" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+         
+        export(response, user);
 	}
 	 
     private void writeHeaderLine() {
@@ -191,10 +216,10 @@ public class OrderService {
         sheet.autoSizeColumn(columnCount);
         Cell cell = row.createCell(columnCount);
 
-            style.setDataFormat(  
-            		workbook.getCreationHelper().createDataFormat().getFormat("d-mmm-yy"));  
-            cell.setCellValue(value == null ? null : (Date) value);  
-            cell.setCellStyle(style);  
+        style.setDataFormat(  
+        		workbook.getCreationHelper().createDataFormat().getFormat("d-mmm-yy"));  
+        cell.setCellValue(value == null ? null : (Date) value);  
+        cell.setCellStyle(style);  
             
         
     }

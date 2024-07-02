@@ -21,12 +21,12 @@
 
  <!-- Main Content -->
  <main class="col-10 pt-3 ">
-<h1>User Account</h1>
+<h2>User Account</h2>
 <div class="user-account row">
     <form th:action="@{/saveUser}" method="post"  th:object="${user}"
     enctype="multipart/form-data" class="col-12 row" name="userForm">
 
-    <div class="profile col-3">
+    <div class="profile col-2">
         <h2>Profile Photo</h2>
         <div class="profile-pic"> 
         <div  th:if="${imageData != null}"><img th:src="@{'data:image/jpeg;base64,' + ${imageData}}" alt="Image"></div>
@@ -44,7 +44,7 @@
     </div>
     <div class="col-9 row">
     <div class="form-group  col-6">
-        <h2 for="firstName">Full Name</h2>
+        <h3 for="firstName">Full Name</h2>
         <div class="input-field">
             <input type="text" id="fullName" name="fullName" th:field="*{fullName}">
             <div class="regError">				  	
@@ -52,13 +52,13 @@
         </div>
     </div>
       <div class="form-group col-6">
-          <h2 for="email">Email</h2>
+          <h3 for="email">Email</h2>
           <div class="input-field">
               <input type="text" id="email" name="email" disabled="disabled" th:field="*{email}">
           </div>
       </div>
       <div class="form-group col-6">
-          <h2 for="password">Password</h2>
+          <h3 for="password">Password</h2>
           <div class="input-field">
               <input type="password" id="password" name="password" placeholder="**********">
               <div class="regError">				  	
@@ -66,19 +66,19 @@
           </div>
       </div>
       <div class="form-group col-12">
-          <h2 for="website">Website (optional)</h2>
+          <h3 for="website">Website (optional)</h2>
           <div class="input-field">
               <input type="text" id="website" name="website" th:field="*{website}">
           </div>
       </div>
       <div class="form-group col-12">
-          <h2 for="businessName">Business Name</h2>
+          <h3 for="businessName">Business Name</h2>
           <div class="input-field">
               <input type="text" required id="businessName" name="businessName" th:field="*{businessName}">
           </div>
       </div>
       <div class="form-group col-12">
-          <h2 for="description">Business Description</h2>
+          <h3 for="description">Business Address</h2>
           <div class="input-field">
               <textarea id="businessDescr" required name="businessDescr" th:field="*{businessDescr}"></textarea>
           </div>

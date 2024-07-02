@@ -52,6 +52,16 @@ a{
     color: var(--color-dark);
 }
 
+img {
+    border-radius: 50%;
+    margin-top: 10%;
+}
+img {
+    display: block;
+    width: 100%;
+    object-fit: cover;
+}
+
 img{
     display: block;
     width: 100%;

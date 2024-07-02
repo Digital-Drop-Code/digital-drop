@@ -23,9 +23,9 @@
 
  <!-- Main Content -->
  <main class="col-10 pt-3 ">
-    <h1>Settings</h1>
+    <h4>Settings</h4>
     <section class="settings-section">
-        <h2>Connect your Store</h2>
+        <h4>Connect your Store</h4>
         <form  th:action="@{/saveSettings}" class="row w-100" method="post">
         <input type="hidden" name="id" id="id" th:value="${store != null ? store.id : null}">
         <div class=" col-6 pt-3">
@@ -49,7 +49,7 @@
             <input  required  class="w-100"type="text"  id="field2" name="field2" th:value="${store != null ?store.field2 : ''}">
             
              </div>
-           <h2 class="pt-3" >Connect your Courier</h2><br><br>
+           <h4 class="pt-3" >Connect your Courier</h4><br><br>
                            
              <div class=" col-6 pt-3">
              
@@ -75,7 +75,7 @@
          <form  th:action="@{/saveJazzSettings}" class="row w-100" method="post">
              <input type="hidden" name="id" id="id" th:value="${jazzAcc!= null ? jazzAcc.id : null}">
         
-         	<h2>Connect your Jazzcash Account</h2>
+         	<h4>Connect your Jazzcash Account</h4>
             <label for="jazzcashAccountName">Jazzcash Account Name:</label>
             <input  class="w-100"type="text" id="jazzId" th:value="${jazzAcc!= null ?jazzAcc.jazzId : ''}" 
             name="jazzId">

@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
@@ -26,9 +27,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import lombok.extern.slf4j.Slf4j;
 import net.codejava.config.MyUserDetails;
 import net.codejava.entity.Order;
+import net.codejava.entity.OrderKey;
 import net.codejava.entity.StoreInfo;
+import net.codejava.entity.User;
 import net.codejava.service.OrderService;
 import net.codejava.service.StoreService;
+import net.codejava.service.UserService;
 import net.codejava.utility.Constant;
 import net.codejava.utility.CustomException;
 
@@ -41,6 +45,9 @@ public class OrderController {
 
 	@Autowired
 	StoreService storeService;
+	
+	@Autowired
+	UserService userService;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder webDataBinder) {
@@ -111,11 +118,18 @@ public class OrderController {
 				redirectAttributes.addFlashAttribute(Constant.ERROR,"Order already exists.");
 				return "redirect:/newOrder";
 			}
-			StoreInfo store = new StoreInfo();
-			store.setId(0L);
-			order.getId().setStore(store);
-			order.setUser(userDetail.getUser());
-			orderService.save(order);
+			if(oldOrder == null) {
+				User user = userService.findByEmail(userDetail.getUsername());
+				StoreInfo store = storeService.getStoreByUser(userDetail.getUser());
+
+				oldOrder = new Order();
+				oldOrder.setId(new OrderKey());
+				oldOrder.getId().setStore(store);
+				oldOrder.setUser(user);
+				oldOrder.getId().setOrderNo(order.getId().getOrderNo());
+			}
+			BeanUtils.copyProperties(order, oldOrder, "id","user","trackingNo");
+			orderService.save(oldOrder);
 			redirectAttributes.addFlashAttribute(Constant.SUCCESS,"Order Successfully Created/Updated.");
 
 		}catch(Exception ex) {
