@@ -22,7 +22,22 @@
  <!-- Main Content -->
  <main class="col-10 pt-3 ">
 <h4>Reports</h4>
-
+        <form  th:action="@{/updateReport}" class="row w-100 border-info border-4 border-bottom" method="post">    
+          <div class=" col-3 pt-3 pb-3">      
+                <h5 class="text-secondary">From Date:</h5>
+                  
+		        <input  type="date" class="form-control" id="fromDate" name="fromDate" th:value="${fromDate != null ? #dates.format(fromDate, 'yyyy-MM-dd') : ''}"/>
+		        
+        	</div>
+        	<div class=" col-3  pt-3  pb-3">      
+                <h5  class="text-secondary">To Date:</h5>
+                  
+		        <input  type="date" class="form-control" id="toDate" name="toDate" th:value="${toDate != null ? #dates.format(toDate, 'yyyy-MM-dd') : ''}"/>
+		        
+        	</div>
+        	<div class ="col-3  pt-5  pb-3" ><button class="btn-info btn">Update Filter</button></div>
+        	
+        </form>
      <div class="col-6"  id="orderData">
         <br>
         	<table class="table table-dark table-striped" >
@@ -32,14 +47,39 @@
         	<th>Action</th>
         	</tr>
         	</thead>
-        		<tr >
-        			<td >Settlement Report </td>
+        	<tr >
+        			<td >Unprocessed Orders Report </td>
         			<td >
-       			        <a href="/order/generateReport">
+       			        <a th:href="@{/order/generateReport?name=1}+'&fromDate='+${fromDate}+'&toDate='+${toDate}">
+      			        	<button class="btn btn-primary">Download</button>
+     			        </a>
+        			</td>
+        		</tr>
+        		<tr >
+        			<td >Sales Report </td>
+        			<td >
+       			        <a th:href="@{/order/generateReport?name=2}+'&fromDate='+${fromDate}+'&toDate='+${toDate}">
       			        	<button class="btn btn-primary">Download</button>
      			        	</a>
         			</td>
         		</tr>
+        		<tr >
+        			<td >Shipped Packages Report </td>
+        			<td >
+       			        <a th:href="@{/order/generateReport?name=3}+'&fromDate='+${fromDate}+'&toDate='+${toDate}">
+      			        	<button class="btn btn-primary">Download</button>
+     			        	</a>
+        			</td>
+        		</tr>
+        		<tr >
+        			<td >Settlement Report </td>
+        			<td >
+       			        <a th:href="@{/order/generateReport?name=4}+'&fromDate='+${fromDate}+'&toDate='+${toDate}">
+      			        	<button class="btn btn-primary">Download</button>
+     			        	</a>
+        			</td>
+        		</tr>
+        		
         </table>
         </div>
  </div>

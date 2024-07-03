@@ -1,7 +1,10 @@
 package net.codejava.controller;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,15 +15,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -128,7 +134,7 @@ public class OrderController {
 				oldOrder.setUser(user);
 				oldOrder.getId().setOrderNo(order.getId().getOrderNo());
 			}
-			BeanUtils.copyProperties(order, oldOrder, "id","user","trackingNo");
+			BeanUtils.copyProperties(order, oldOrder, "id","user");
 			orderService.save(oldOrder);
 			redirectAttributes.addFlashAttribute(Constant.SUCCESS,"Order Successfully Created/Updated.");
 
@@ -179,6 +185,8 @@ public class OrderController {
 	@GetMapping("/order/showReport")
 	public String showReport(RedirectAttributes redirectAttributes,Model model,  @AuthenticationPrincipal MyUserDetails userDetail) {
 		try {
+			 model.addAttribute("fromDate", null );
+			 model.addAttribute("toDate",null );
 		}catch(CustomException ex) {
 			log.error("error in saving order", ex);
 			redirectAttributes.addFlashAttribute(Constant.ERROR,ex.getMessage());
@@ -189,11 +197,66 @@ public class OrderController {
 		}
    	   return "reports";
 	}
+	
+	@PreAuthorize("hasAuthority('USER')")
+	@RequestMapping("/updateReport")
+	public String updateReport(Model model,@AuthenticationPrincipal MyUserDetails userDetails,
+			@RequestParam(name = "fromDate", required = false)    @DateTimeFormat(pattern = "yyyy-MM-dd")
+			 Date fromDate,
+			@RequestParam(name = "toDate", required = false)    @DateTimeFormat(pattern = "yyyy-MM-dd")
+			 Date toDate) throws ParseException {
+
+		 model.addAttribute("fromDate", fromDate );
+		 model.addAttribute("toDate",toDate );
+    	   return "reports";
+	}
 	@PreAuthorize("hasAuthority('USER')")
 	@GetMapping("/order/generateReport")
-	public String generateReport(HttpServletResponse response,RedirectAttributes redirectAttributes,Model model,  @AuthenticationPrincipal MyUserDetails userDetail) {
+	public String generateReport(
+			@RequestParam(name = "name", required = false)   String name,
+			@RequestParam(name = "fromDate", required = false, defaultValue ="") String fromDateS,
+			@RequestParam(name = "toDate", required = false, defaultValue ="")String toDateS,
+			HttpServletResponse response,RedirectAttributes redirectAttributes,Model model,  @AuthenticationPrincipal MyUserDetails userDetail) {
 		try {
-			orderService.generateReport(userDetail.getUser(), response);
+			SimpleDateFormat sdf = new SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy",
+                    Locale.ENGLISH);
+
+			SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+
+			
+			Date toDate = null;
+			Date fromDate = null;
+			if(toDateS != null && !StringUtils.isEmpty(toDateS) && !toDateS.equals("null")) {
+				toDate = sdf.parse(toDateS);
+			}
+			
+			if(fromDateS!= null && !StringUtils.isEmpty(fromDateS) && !fromDateS.equals("null")) {
+				fromDate = sdf.parse(fromDateS);
+			}
+			
+
+			model.addAttribute("fromDate", fromDate );
+			model.addAttribute("toDate",toDate );
+			
+			if(toDate == null && fromDate != null) {
+				Calendar c = Calendar.getInstance();
+				c.setTime(new Date());
+				c.add(Calendar.YEAR, 18);
+				toDate= c.getTime();
+				String dateString = sdf1.format(toDate);
+				toDate = sdf1.parse(dateString);
+			}
+			
+			if(fromDate == null && toDate != null) {
+				Calendar c = Calendar.getInstance();
+				c.setTime(new Date());
+				c.add(Calendar.YEAR, -18);
+				fromDate = c.getTime();
+				String dateString = sdf1.format(toDate);
+				fromDate = sdf1.parse(dateString);
+			}
+			
+			orderService.generateReport(userDetail.getUser(), response,name, fromDate, toDate);
 		}catch(CustomException ex) {
 			log.error("error in saving order", ex);
 			redirectAttributes.addFlashAttribute(Constant.ERROR,ex.getMessage());

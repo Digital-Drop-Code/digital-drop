@@ -79,6 +79,10 @@ public class Order implements Serializable {
 	@Column(name = "tracking_no")
 	private String trackingNo;
 	
+	@Column(name = "shipment_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date shipmentDate;
+	
 	@Column(name = "transaction_id")
 	private String transactionId;
 	

@@ -2,9 +2,11 @@ package net.codejava.service;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -112,87 +114,124 @@ public class OrderService {
 	}
 	
 	@Transactional
-	public void generateTrackingNo(String orderNo, StoreInfo store, User user) {
+	public void generateTrackingNo(String orderNo, StoreInfo store, User user) throws ParseException {
 		if(store.getCourierType().getName().equals(Constant.POSTEX)) {
+			SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar c = Calendar.getInstance();
+			c.setTime(new Date());
+			Date toDate= c.getTime();
+			String dateString = sdf1.format(toDate);
+			toDate = sdf1.parse(dateString);
 			Order  order =  orderRepository.findFirstByIdOrderNoAndUser(orderNo,user);
 			if(order != null) {
 				String no = postExService.generatTrackingNo(order, store.getField3());
 				order.setTrackingNo(no);
+				order.setShipmentDate(toDate);
 				orderRepository.save(order);
 			}			
 		}
 	}
 
-	public GraphData totalOrdersByMonth(User user) {
-		List<GraphRow> rows = orderRepository.countByUserAndMonth(user);
+	public GraphData totalOrdersByMonth(User user,Date fromDate , Date toDate ) {
+		List<GraphRow> rows = orderRepository.countByUserAndMonth(user,fromDate,toDate);
 		return new GraphData(
 				rows.stream().flatMap(p -> Stream.of(p.getKey())).collect(Collectors.toList())
 				,rows.stream().flatMap(p -> Stream.of(Long.valueOf(p.getCount()))).collect(Collectors.toList()));
 	}
 	
-	public GraphData amountOrdersByMonth(User user) {
-		List<GraphRow> rows = orderRepository.amountByUserAndMonth(user);
+	public GraphData amountOrdersByMonth(User user,Date fromDate , Date toDate) {
+		List<GraphRow> rows = orderRepository.amountByUserAndMonth(user,fromDate,toDate);
 		return new GraphData(
 				rows.stream().flatMap(p -> Stream.of(p.getKey())).collect(Collectors.toList())
 				,rows.stream().flatMap(p -> Stream.of(p.getValue())).collect(Collectors.toList()), null);
 	}
 	
-	public GraphData totalOrdersByCity(User user) {
-		List<GraphRow> rows = orderRepository.countByUserAndCity(user);
+	public GraphData totalOrdersByCity(User user,Date fromDate , Date toDate) {
+		List<GraphRow> rows = orderRepository.countByUserAndCity(user,fromDate,toDate);
 		return new GraphData(
 				rows.stream().flatMap(p -> Stream.of(p.getKey())).collect(Collectors.toList())
 				,rows.stream().flatMap(p -> Stream.of(Long.valueOf(p.getCount()))).collect(Collectors.toList()));
 	}
 	
-	public Long totalOrders(User user) {
-		return orderRepository.countByUser(user);
+	public Long totalOrders(User user,Date fromDate , Date toDate) {
+		if(fromDate == null && toDate == null)
+			return orderRepository.countByUser(user);
+		else {
+			return orderRepository.countByUserAndDateCreatedBetween(user,fromDate,toDate);
+
+		}
 	}
 
-	public Long trackedOrders(User user) {
-		// TODO Auto-generated method stub
-		return orderRepository.countByUserAndTrackingNoNotNull(user);
+	public Long trackedOrders(User user,Date fromDate , Date toDate) {
+		if(fromDate == null && toDate == null)	
+			// TODO Auto-generated method stub
+			return orderRepository.countByUserAndTrackingNoNotNull(user);
+		else {
+			return orderRepository.countByUserAndTrackingNoNotNullAndDateCreatedBetween(user,fromDate,toDate);
+
+		}
 	}
 	
 
-	public Long paidOrders(User user) {
-		// TODO Auto-generated method stub
-		return orderRepository.countByUserAndStatus(user,"Settled");
+	public Long paidOrders(User user,Date fromDate , Date toDate) {
+		if(fromDate == null && toDate == null)	
+			// TODO Auto-generated method stub
+			return orderRepository.countByUserAndStatus(user,"Settled");
+		else {
+			return orderRepository.countByUserAndStatusAndDateCreatedBetween(user,"Settled",fromDate,toDate);
+
+		}
 	}
 
-	public void generateReport(User user,HttpServletResponse response) throws IOException {
+	public void generateReport(User user,HttpServletResponse response,String name,Date fromDate,Date toDate) throws IOException {
 	   response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-        String currentDateTime = dateFormatter.format(new Date());
-         
+        String currentDateTime = dateFormatter.format(new Date());        
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=orders" + currentDateTime + ".xlsx";
-        response.setHeader(headerKey, headerValue);
-         
-        export(response, user);
+        response.setHeader(headerKey, headerValue);        
+        export(response, user,name,fromDate, toDate);
 	}
 	 
-    private void writeHeaderLine() {
+    private void writeHeaderLine(String name,Date fromDate,Date toDate) {
         workbook = new XSSFWorkbook();
-        sheet = workbook.createSheet("Orders");
-         
-        Row row = sheet.createRow(0);
-         
+        sheet = workbook.createSheet("Orders");         
+        Row row = sheet.createRow(0);         
         CellStyle style = workbook.createCellStyle();
         XSSFFont font = workbook.createFont();
         font.setBold(true);
         font.setFontHeight(16);
         style.setFont(font);
-         
-        createCell(row, 0, "Order NO", style);      
-        createCell(row, 1, "Customer Name", style);       
-        createCell(row, 2, "Shipping Address", style);    
-        createCell(row, 3, "COD Amount", style);
-        createCell(row, 4, "Transaction ID", style);
-        createCell(row, 5, "Status", style);
-        createCell(row, 6, "Order Date", style);
-        createCell(row, 7, "Settlement Date", style);
-
-         
+        if(name.equals("1")) {
+	        createCell(row, 0, "Order NO", style);      
+	        createCell(row, 1, "Customer Name", style);       
+	        createCell(row, 2, "Shipping Address", style);    
+	        createCell(row, 3, "COD Amount", style);
+	        createCell(row, 4, "Status", style);
+	        createCell(row, 5, "Order Date", style);
+        }
+        if(name.equals("3") ) {
+	        createCell(row, 0, "Order NO", style);      
+	        createCell(row, 1, "Customer Name", style);       
+	        createCell(row, 2, "Shipping Address", style);    
+	        createCell(row, 3, "COD Amount", style);
+	        createCell(row, 4, "Status", style);
+	        createCell(row, 5, "Order Date", style);
+	        createCell(row, 6, "Trackig NO", style);
+	        createCell(row, 7, "Shipment Date", style);
+        }
+        if(name.equals("4") || name.equals("2") ) {
+	        createCell(row, 0, "Order NO", style);      
+	        createCell(row, 1, "Customer Name", style);       
+	        createCell(row, 2, "Shipping Address", style);    
+	        createCell(row, 3, "COD Amount", style);
+	        createCell(row, 4, "Status", style);
+	        createCell(row, 5, "Order Date", style);
+	        createCell(row, 6, "Trackig NO", style);
+	        createCell(row, 7, "Shipment Date", style);
+	        createCell(row, 8, "Transaction ID", style);
+	        createCell(row, 9, "Settlement Date", style);
+        }        
     }
      
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
@@ -224,42 +263,87 @@ public class OrderService {
         
     }
      
-    private void writeDataLines(User user) {
-        int rowCount = 1;
- 
+    private void writeDataLines(User user,String name,Date fromDate,Date toDate) {
+        int rowCount = 1; 
         CellStyle style = workbook.createCellStyle();
         XSSFFont font = workbook.createFont();
         font.setFontHeight(14);
-        style.setFont(font);
-        
+        style.setFont(font);        
         CellStyle style2 = workbook.createCellStyle();
         style2.setFont(font);
-        
-		List<Order> orders = orderRepository.findByUserOrderByDateCreated(user);
-        CreationHelper createHelper = workbook.getCreationHelper();  
+    	List<Order> orders = new ArrayList<>();
 
-        for (Order order : orders) {
-            Row row = sheet.createRow(rowCount++);
-            int columnCount = 0;
-             
-            createCell(row, columnCount++, order.getId().getOrderNo(), style);
-            createCell(row, columnCount++, order.getFirstName() + " " + order.getLastName(), style);
-            createCell(row, columnCount++, order.getAddress1(), style);
-            createCell(row, columnCount++, order.getTotal(), style);
-            createCell(row, columnCount++, order.getTransactionId(), style);
-
-            createCell(row, columnCount++, order.getStatus() == null ? "Unpaid" : order.getStatus(), style);
-            createDateRow(row, columnCount++, order.getDateCreated(), style2);
-
-            createDateRow(row, columnCount++, order.getSettledDate(), style2);
-
-             
+        if(name.equals("1")) {
+        	orders = orderRepository.getUnprocessOrder(user,fromDate,toDate);       		
+	        for (Order order : orders) {
+	            Row row = sheet.createRow(rowCount++);
+	            int columnCount = 0;	             
+	            createCell(row, columnCount++, order.getId().getOrderNo(), style);
+	            createCell(row, columnCount++, order.getFirstName() + " " + order.getLastName(), style);
+	            createCell(row, columnCount++, order.getAddress1(), style);
+	            createCell(row, columnCount++, order.getTotal(), style);	
+	            createCell(row, columnCount++, order.getStatus() == null ? "Unpaid" : order.getStatus(), style);
+	            createDateRow(row, columnCount++, order.getDateCreated(), style2);	             
+	        }
+        }
+    	if(name.equals("2")) {
+        	orders = orderRepository.getAllOrder(user,fromDate,toDate);       		
+	        for (Order order : orders) {
+	            Row row = sheet.createRow(rowCount++);
+	            int columnCount = 0;	             
+	            createCell(row, columnCount++, order.getId().getOrderNo(), style);
+	            createCell(row, columnCount++, order.getFirstName() + " " + order.getLastName(), style);
+	            createCell(row, columnCount++, order.getAddress1(), style);
+	            createCell(row, columnCount++, order.getTotal(), style);
+	            createCell(row, columnCount++, order.getStatus() == null ? "Unpaid" : order.getStatus(), style);
+	            createDateRow(row, columnCount++, order.getDateCreated(), style2);	             
+	            createCell(row, columnCount++, order.getTrackingNo(), style2);	             
+	            createDateRow(row, columnCount++, order.getShipmentDate(), style2);
+	            createCell(row, columnCount++, order.getTransactionId(), style);	
+	            createDateRow(row, columnCount++, order.getSettledDate(), style2);
+	        }
+        }
+    	if(name.equals("3")) {
+        	orders = orderRepository.getAllTrackedOrder(user,fromDate,toDate);       		
+	        for (Order order : orders) {
+	            Row row = sheet.createRow(rowCount++);
+	            int columnCount = 0;	             
+	            createCell(row, columnCount++, order.getId().getOrderNo(), style);
+	            createCell(row, columnCount++, order.getFirstName() + " " + order.getLastName(), style);
+	            createCell(row, columnCount++, order.getAddress1(), style);
+	            createCell(row, columnCount++, order.getTotal(), style);	
+	            createCell(row, columnCount++, order.getStatus() == null ? "Unpaid" : order.getStatus(), style);
+	            createDateRow(row, columnCount++, order.getDateCreated(), style2);	   
+	            createCell(row, columnCount++, order.getTrackingNo(), style2);	             
+	            createDateRow(row, columnCount++, order.getShipmentDate(), style2);	   
+	        }
+        }        
+        if(name.equals("4")) {
+        	if(fromDate == null && toDate == null) {
+        		orders = orderRepository.findByUserOrderByDateCreated(user);
+        	}else {
+        		orders = orderRepository.findByUserAndDateCreatedBetweenOrderByDateCreated(user,fromDate,toDate);
+        	}	
+	        for (Order order : orders) {
+	            Row row = sheet.createRow(rowCount++);
+	            int columnCount = 0;	             
+	            createCell(row, columnCount++, order.getId().getOrderNo(), style);
+	            createCell(row, columnCount++, order.getFirstName() + " " + order.getLastName(), style);
+	            createCell(row, columnCount++, order.getAddress1(), style);
+	            createCell(row, columnCount++, order.getTotal(), style);
+	            createCell(row, columnCount++, order.getStatus() == null ? "Unpaid" : order.getStatus(), style);
+	            createDateRow(row, columnCount++, order.getDateCreated(), style2);	             
+	            createCell(row, columnCount++, order.getTrackingNo(), style2);	             
+	            createDateRow(row, columnCount++, order.getShipmentDate(), style2);
+	            createCell(row, columnCount++, order.getTransactionId(), style);	
+	            createDateRow(row, columnCount++, order.getSettledDate(), style2);	             
+	        }
         }
     }
      
-    public void export(HttpServletResponse response,User user) throws IOException {
-        writeHeaderLine();
-        writeDataLines(user);
+    public void export(HttpServletResponse response,User user,String name,Date fromDate,Date toDate) throws IOException {
+        writeHeaderLine(name,fromDate, toDate);
+        writeDataLines(user,name,fromDate, toDate);
          
         ServletOutputStream outputStream = response.getOutputStream();
         workbook.write(outputStream);

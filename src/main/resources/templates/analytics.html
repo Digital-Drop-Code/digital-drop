@@ -23,50 +23,70 @@
     <!-- End of Sidebar Section -->
 
     <!-- Main Content -->
-    <main class="col-10 pt-1 row">
-        <div class="col-12 m-0 p-0"><h4 class="col-12 m-0 p-0">Analytics</h4>
+    <main class="col-10 pt-1 row bg-white">
+        <div class="col-12 m-0 p-0"><h4 class="col-12 m-0 p-0 text-secondary">Analytics</h4>
         <div class="analyse  row">
+          <form  th:action="@{/analytics}" class="row w-100 border-info border-4 border-bottom" method="post">    
+          <div class ="col-1"></div>
+          <div class=" col-4 pt-3 pb-3">      
+                <h5 class="text-secondary">From Date:</h5>
+                  
+		        <input  type="date" class="form-control" id="fromDate" name="fromDate" th:value="${fromDate != null ? #dates.format(fromDate, 'yyyy-MM-dd') : ''}"/>
+		        
+        	</div>
+        	<div class=" col-4  pt-3  pb-3">      
+                <h5  class="text-secondary">To Date:</h5>
+                  
+		        <input  type="date" class="form-control" id="toDate" name="toDate" th:value="${toDate != null ? #dates.format(toDate, 'yyyy-MM-dd') : ''}"/>
+		        
+        	</div>
+        	<div class ="col-3  pt-5  pb-3" ><button class="btn-info btn">Search</button></div>
+        	
+        </form>
+        <br> <br>
         
-        <div class="col-5">
+        <div class="col-5 bg-white pt-2">
+        <h5 class="mt-5 text-center text-secondary">Order Settlement</h5>
+        
 	             <!-- Charts Area
 	       ============================================= -->
-		<div class="bottommargin mx-auto " id="graph-container-5a">
+		<div class="bottommargin mx-auto border-info border-4 border pb-2" id="graph-container-5a">
 	        <canvas id="chart-digAmount-2"></canvas>
 	     </div>
-	          <h5 class="mt-5 text-center">Total Orders</h5>
 	     </div>
 	         
-         <div class="col-5">
-         <br>
+         <div class="col-5 bg-white pt-2">
+         	<h5 class="mt-5 text-center text-secondary">Orders Count By Month</h5>
+         
 		         <!-- Charts Area
 			============================================= -->
-			<div class="bottommargin mx-auto " id="graph-container-5">
+			<div class="bottommargin mx-auto border-info border-4 border pb-2 " id="graph-container-5">
 				<canvas id="chart-digAmount-1"></canvas>
 			</div>
-			<h5 class="mt-5 text-center">Orders By Month</h5>
 			
 		<!-- Charts Area End -->
          </div>
           
-	     <div class="col-5">
-         <br>
+	     <div class="col-5 bg-white">
+	     	<h5 class="mt-5 text-center text-secondary">Order Value By Month</h5>
+	     
 		         <!-- Charts Area
 			============================================= -->
-			<div class="bottommargin mx-auto " id="graph-container-5c">
+			<div class="bottommargin mx-auto border-info border-4 border pb-2 " id="graph-container-5c">
 				<canvas id="chart-digAmount-4"></canvas>
 			</div>
-			<h5 class="mt-5 text-center">Amount By Month</h5>
 			
 		<!-- Charts Area End -->
          </div>
          
-        <div class="col-5">
+        <div class="col-5 bg-white pt-2">
+        <h5 class="mt-5 text-center text-secondary">Shipment Packages By City</h5>
+        
 	             <!-- Charts Area
 	       ============================================= -->
-		<div class="bottommargin mx-auto " id="graph-container-5b">
+		<div class="bottommargin mx-auto  border-info border-4 border pb-2" id="graph-container-5b">
 	        <canvas id="chart-digAmount-3"></canvas>
 	     </div>
-	          <h5 class="mt-5 text-center">Orders By City</h5>
 	     </div>
          </div></div>
         
@@ -87,13 +107,13 @@ monthName.push("[(${n+''})]");
 var monthOrders = [[${monthGraph.count}]];
 
 var config = {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: monthName,
             datasets: [{
                 label: "Orders",
-                backgroundColor: window.chartColors.blue,
-                borderColor: window.chartColors.blue,
+                borderColor: '#9B86BD',
+                backgroundColor: '#E2BBE9',
                 data: monthOrders,
                 fill: false,
             }]
@@ -147,11 +167,11 @@ var config2 = {
         type: 'doughnut',
         data: {
             datasets: [{
-                data: [uOrder,pOrder,tOrder],
+                data: [uOrder,pOrder],
                 backgroundColor: [
-                    window.chartColors.red,
-                    window.chartColors.purple,
-                    window.chartColors.yellow,
+                    '#704264',
+                    '#BB8493',
+                    '#DBAFA0',
 
                 ],
                 label: 'Order Count Chart'
@@ -160,10 +180,7 @@ var config2 = {
 
                 "Unpaid",
 
-                "Paid",
-
-                "Tracked",
-            ]
+                "Paid"            ]
         },
         options: {
             responsive: true,
@@ -198,9 +215,9 @@ var config2 = {
                 datasets: [{
                     data: cityOrders,
                     backgroundColor: [
-                        window.chartColors.green,
-                        window.chartColors.blue,
-                        window.chartColors.yellow,
+                        '#76ABAE',
+                       '#4F6F52',
+                        '#80AF81',
 
                     ],
                     label: ''
@@ -243,8 +260,8 @@ var config2 = {
                     labels: monthName1,
                     datasets: [{
                         label: "Orders",
-                        backgroundColor: window.chartColors.red,
-                        borderColor: window.chartColors.red,
+                        backgroundColor: '#43766C',
+                        borderColor: '#43766C',
                         data: monthOrders1,
                         fill: false,
                     }]

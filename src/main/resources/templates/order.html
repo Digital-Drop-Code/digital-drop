@@ -37,7 +37,7 @@
     <table class="table table-dark table-striped">
         <thead>
          <tr>
-                <th colspan="7">                 			 
+                <th colspan="8">                 			 
 			    <form th:action="@{/orders}" method="get">
 			        <input type="text" th:name="keyword" th:value="${keyword}" placeholder="Search by order NO"/>
 			        <button type="submit">Search</button>
@@ -45,12 +45,13 @@
 			    </th>
             </tr>
             <tr>
-                <th class="w-10"><a th:href="@{/orders(sortBy=id.orderNo, sortDir= ${reverseSortDir})}">ORDER NO</a></th>
-                <th class="w-15"><a th:href="@{/orders(sortBy=total, sortDir= ${reverseSortDir})}">ORDER AMOUNT</a></th>
+                <th class="w-5"><a th:href="@{/orders(sortBy=id.orderNo, sortDir= ${reverseSortDir})}">ORDER NO</a></th>
+                <th class="w-10"><a th:href="@{/orders(sortBy=total, sortDir= ${reverseSortDir})}">ORDER AMOUNT</a></th>
                 <th class="w-10"><a th:href="@{/orders(sortBy=dateCreated, sortDir= ${reverseSortDir})}">ORDER DATE</a></th>
                 <th class="w-15"><a th:href="@{/orders(sortBy=firstName, sortDir= ${reverseSortDir})}">CUSTOMER NAME</a></th>
-                <th class="w-15"><a th:href="@{/orders(sortBy=externalStatus, sortDir= ${reverseSortDir})}">STATUS</a></th>
+                <th class="w-15"><a th:href="@{/orders(sortBy=status, sortDir= ${reverseSortDir})}">STATUS</a></th>
                 <th class="w-15"><a th:href="@{/orders(sortBy=trackingNo, sortDir= ${reverseSortDir})}">TRACKING #</a></th>
+                <th class="w-15"><a th:href="@{/orders(sortBy=shipmentDate, sortDir= ${reverseSortDir})}">SHIPMENT DATE</a></th>
                 
                 <th class="w-20">ACTIONS</th>
             </tr>
@@ -61,8 +62,9 @@
                 <td th:text="${order.total}"></td>
                 <td th:text="${#dates.format(order.dateCreated, 'yyyy-MM-dd')}"></td>
                 <td th:text="${order.firstName + ' ' + order.lastName}"></td>
-                <td th:text="${order.externalStatus}"></td>       
-                 <td th:text="${order.trackingNo}"></td>                           
+                <td th:text="${order.status}"></td>       
+                 <td th:text="${order.trackingNo}"></td>  
+                 <td th:text="${#dates.format(order.shipmentDate, 'yyyy-MM-dd')}"></td>                         
                 <td class="action">
                 	<a th:href="'/newOrder?orderNo='+${order.id.orderNo}"><button >Edit</button></a>
                 

@@ -66,6 +66,16 @@
 		        <input  type="date" class="form-control" id="settledDate" name="settledDate" th:value="${order != null ? #dates.format(order.settledDate, 'yyyy-MM-dd') : ''}"/>
 		        
         	</div>
+        	<div class=" col-6 pt-3">      
+                <label for="storeName" >Shipment Date:</label><br>
+                  
+		        <input  type="date" class="form-control" id="shipmentDate" name="shipmentDate" th:value="${order != null ? #dates.format(order.shipmentDate, 'yyyy-MM-dd') : ''}"/>
+		        
+        	</div>
+        	<div class=" col-6 pt-3">
+            	<label for="storeName" >Tracking NO</label><br>
+            	<input  class="w-100"type="text"  id="trackingNo" name="trackingNo" th:value="${order != null ?order.trackingNo: ''}">
+            </div>
         	<div class=" col-6 pt-3">
             	<label for="storeName" >Transaction ID</label><br>
             	<input  class="w-100"type="text"  id="transactionId" name="transactionId" th:value="${order != null ?order.transactionId: ''}">
