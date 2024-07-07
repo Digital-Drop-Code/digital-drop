@@ -7,24 +7,26 @@ In 2023, Pakistan's e-commerce market ranked 46th globally with a revenue of $5.
 The "Digital Drop Application" introduces a novel approach to transforming the prevalent cash-on-delivery (COD) system in Pakistan's e-commerce sector. By leveraging QR code technology, the app modernizes the payment process, reducing the dependency on cash handling and minimizing the associated risks and costs. Unlike traditional COD methods that require substantial liquidity and dedicated cash management teams, our solution streamlines transactions, ensuring secure and efficient payments. This innovative integration of e-commerce platforms, courier services, mobile banking, and customers creates a cohesive ecosystem that simplifies the payment experience, ultimately fostering greater trust and convenience for all stakeholders involved.
 
 ## Design Diagram:
-Seller Onboarding:
+### Seller Onboarding:
 
- 
+![alt text](https://github.com/Digital-Drop-Code/digital-drop/blob/main/src/main/resources/static/public/1.jpg?raw=true)
 
+### Order Shipment:
 
+![alt text](https://github.com/Digital-Drop-Code/digital-drop/blob/main/src/main/resources/static/public/2.jpg?raw=true)
 
+ ### Package Delivery:
 
+![alt text](https://github.com/Digital-Drop-Code/digital-drop/blob/main/src/main/resources/static/public/3.jpg?raw=true)
 
-Order Shipment:
+### Reporting & Analytics:
 
- 
-Package Delivery:
-
- 
-Reporting & Analytics:
+![alt text](https://github.com/Digital-Drop-Code/digital-drop/blob/main/src/main/resources/static/public/4.jpg?raw=true)
  
 ## Results:
- 
+
+![alt text](https://github.com/Digital-Drop-Code/digital-drop/blob/main/src/main/resources/static/public/5.png?raw=true)
+
 
 When a customer places an order, the merchant can use the app to generate a shipping label that includes all necessary information for the courier booking, such as the delivery address and package details. This shipping label also features a unique QR code that links to the COD payment details (Merchant JazzCash Account & amount of parcel). The shipping label is then printed and affixed to the parcel for delivery. Upon delivery, the customer simply scans the QR code using their mobile banking app to complete the payment.
 
